@@ -11,64 +11,63 @@ app.get('/',(req,resp)=>{
 })
 
 interface Response{
-    alfabeto : string,
-    estados : string[],
-    transicoes : {
+    ribbon: string[],
+    alphabet : string[],
+    states : string[],
+    transitions : {
         state: string,
         alphabet: string,
         goState: string
     }[],
-    estadoInicial: string,
-    estadosFinais: string[],
+    initialState: string,
+    finalStates: string,
 }
 
-app.post('/',(req,resp)=>{
-    const { alphabet, states,transitions, initialState, finalStates } = req.body;
 
-    const fita = ['0','1'];
+app.post('/',(req,resp)=>{
+    const {ribbon, alphabet, states, transitions, initialState, finalStates}:Response = req.body;
+
+
     let estadoAtual = '';
 
-    const response:Response = {
-        "alfabeto" : alphabet,
-        "estados" : states,
-        "transicoes" : transitions,
-        "estadoInicial": initialState,
-        "estadosFinais": finalStates
-    }
-
-    //pegar a cabeça da fita
-    // pegar o estadoAtual
-    //percorrer o vetor de transitions e comparar o state com o estado atual 
-    //se for igual, ver se ele tem algum alphabet q seja q nem a cabeça e pegar o goState e colocar no estadoAtual
-    //remover esse item da fita
-   
-    const cabeca = fita[0];
-    
     if(estadoAtual == ''){
-        estadoAtual = response.estadoInicial;
+        estadoAtual = initialState;
     }
 
-
-
-    function pegarEstadoFinal(){
-        const arrayComEstadoAtual = response.transicoes.filter(function(item) {
-            return item.state == estadoAtual;
-        })
-    
-        const arrayComTransicoes = arrayComEstadoAtual.filter(function(item) {
-            return item.alphabet == cabeca;
-        })
-    
-        const nextState = arrayComTransicoes[0].goState;
-
-        fita.splice(0,1);
-
-        return nextState;
+    for(let i = 0; i < ribbon.length; i++){
+        if (alphabet.includes(ribbon[i])){
+            pegarEstadoFinal(ribbon[i]);
+        }else{
+            resp.status(400).json({"Message": "Recusado"});
+            return;
+        }
     }
 
+    if(estadoAtual == finalStates){
+        resp.json({"Message": "Aceito"})
+    }else{
+        resp.status(400).json({"Message": "Recusado"});
+    }
 
-    pegarEstadoFinal();
+    function pegarEstadoFinal(i: string){
+        try {
+            const arrayComEstadoAtual = transitions.filter(function(item) {
+                return item.state == estadoAtual;
+            });
+            
+            const arrayComTransicoes = arrayComEstadoAtual.filter(function(item) {
+                return item.alphabet == i;
+            })
+        
+            const nextState = arrayComTransicoes[0].goState;
 
+            estadoAtual = nextState;
+        } catch (error) {
+            console.log("reject")
+        }
+    }
+
+    
 
     resp.json({"ok": true})
 })
