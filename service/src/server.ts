@@ -17,6 +17,9 @@ interface Response{
     finalStates: string,
 }
 
+app.get('/',(req,resp)=>{
+    resp.json({"message": "hello"})
+})
 
 app.post('/',(req,resp)=>{
     const {ribbon, alphabet, states, transitions, initialState, finalStates}:Response = req.body;
