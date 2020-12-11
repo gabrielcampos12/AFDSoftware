@@ -4,12 +4,6 @@ const app = express();
 
 app.use(express.json());
 
-app.get('/',(req,resp)=>{
-    return resp.json({
-        "Message": "Oii cabeça"
-    })
-})
-
 interface Response{
     ribbon: string[],
     alphabet : string[],
