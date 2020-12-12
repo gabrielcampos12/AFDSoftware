@@ -2,7 +2,8 @@ import React, {useState} from 'react';
 
 import {Left, Right, Inputs,  Selects, Transitions, Content, SelectsContent} from './styles/app';
 
-import  Select  from 'react-select';
+import api from './services/api';
+
 
 const App: React.FC = () => {
   const [newAlphabet, setNewAlphabet] = useState('');
@@ -12,10 +13,14 @@ const App: React.FC = () => {
   const [contentsItems, setContentsItems] = useState([
     {state: '', alphabet: '', goState: ''}
   ]);
+  const [newRibbon, setNewRibbon] = useState('');
+  const [newWord, setWord] = useState('');
 
 
   const alphabet = newAlphabet.split(';');
   const states = newStates.split(';');
+  const ribbon = newRibbon.split('');
+
 
   function setContenstsItemsValue(position: number, field:string, value:string){
     const updateContentsItems = contentsItems.map((contentItem, index) => {
@@ -35,7 +40,25 @@ const App: React.FC = () => {
     ]);
   }
 
-  console.log(contentsItems);
+  const req = {
+    ribbon,
+    alphabet,
+    states,
+    transitions:contentsItems,
+    initialState: newInitialState,
+    finalStates: newFinalsStates
+  }
+
+
+  async function handleCreateSearch(){
+    try {
+      const response = await api.post('/', req);
+      setWord(response.data.message);
+    } catch (error) {
+      alert("Erro no envio!")
+    }
+
+  } 
 
   return (
     <>
@@ -62,7 +85,9 @@ const App: React.FC = () => {
             <label>Est.inicial</label>
             <select 
               onChange={(e) => setNewInitialState(e.target.value)}
-            >{states.map((state) => (
+            >
+              <option value="" hidden> </option>
+              {states.map((state) => (
               <option key={state} value={state}>{state}</option>
             ))}
             </select>
@@ -71,7 +96,9 @@ const App: React.FC = () => {
             <label>Est.final</label>
             <select 
               onChange={(e) => setNewFinalsStates(e.target.value)}
-            >{states.map((state) => (
+            >
+              <option value="" hidden> </option>
+              {states.map((state) => (
               <option key={state} value={state}>{state}</option>
             ))}
             </select>
@@ -93,6 +120,7 @@ const App: React.FC = () => {
                       value={item.state}
                       onChange={e => setContenstsItemsValue(index, 'state', e.target.value)}
                     >
+                      <option value="" hidden> </option>
                       {states.map((state) => (
                         <option key={state} value={state}>{state}</option>
                       ))}
@@ -104,6 +132,7 @@ const App: React.FC = () => {
                       value={item.alphabet}
                       onChange={e => setContenstsItemsValue(index, 'alphabet', e.target.value)}
                     >
+                      <option value="" hidden> </option>
                       {alphabet.map((alphabet) => (
                         <option key={alphabet} value={alphabet}>{alphabet}</option>
                       ))}
@@ -115,6 +144,7 @@ const App: React.FC = () => {
                        value={item.goState}
                        onChange={e => setContenstsItemsValue(index, 'goState', e.target.value)}
                     >
+                      <option value="" hidden> </option>
                       {states.map((state) => (
                         <option key={`${state}f`} value={state}>{state}</option>
                       ))}
@@ -131,12 +161,18 @@ const App: React.FC = () => {
 
       <Right>
         <header>
-          <input type="text" placeholder="palavra"/>
-          <button type="button">Confirmar</button>
+          <input 
+            type="text" 
+            placeholder="palavra" 
+            onChange={(e) => setNewRibbon(e.target.value)}
+            />
+          <button onClick={handleCreateSearch } type="button">Confirmar</button>
         </header>
+          { newWord != undefined ? <h1>{`Palavra ${newWord}`}</h1> : <div />}
 
-        <h1>Palavra null</h1>
 
+          
+         
       </Right>
     </>
   );
