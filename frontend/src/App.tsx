@@ -15,7 +15,6 @@ function App() {
 
 
 
-  console.log(newFinalsStates);
 
   return (
     <>
@@ -64,19 +63,23 @@ function App() {
             <button>+</button>
           </header>
           <Content>
-            <SelectsContent>
+            {/* {contents.map((content) => (
+
+            ))} */}
+            <SelectsContent>  
               <div>
                 <label>Estado</label>
-                <Select />
+                <select />
               </div>
               <div>
                 <label>Alfabeto</label>
-                <Select />
+                <select />
               </div>
               <div>
                 <label>Estado final</label>
-                <Select />
+                <select />
               </div>
+              <button>Deletar</button>
             </SelectsContent>
           </Content>
 
