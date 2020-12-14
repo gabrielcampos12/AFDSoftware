@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 
-import {Left, Right, Inputs,  Selects, Transitions, Content, SelectsContent} from './styles/app';
+import {Container, Left, Right, Inputs,  Selects, Transitions, Content, SelectsContent} from './styles/app';
 
 import api from './services/api';
 
@@ -61,7 +61,7 @@ const App: React.FC = () => {
   } 
 
   return (
-    <>
+    <Container>
       <Left>
         <Inputs>
           <div>
@@ -83,8 +83,8 @@ const App: React.FC = () => {
         <Selects>
           <div>
             <label>Est.inicial</label>
-            <select 
-              onChange={(e) => setNewInitialState(e.target.value)}
+              <select 
+                onChange={(e) => setNewInitialState(e.target.value)}
             >
               <option value="" hidden> </option>
               {states.map((state) => (
@@ -107,7 +107,7 @@ const App: React.FC = () => {
 
         <Transitions>
           <header>
-            <strong></strong>
+            <span>Transições</span>
             <button type="button" onClick={addNewContentItem}>+</button>
           </header>
           <Content>
@@ -168,13 +168,9 @@ const App: React.FC = () => {
             />
           <button onClick={handleCreateSearch } type="button">Confirmar</button>
         </header>
-          { newWord != undefined ? <h1>{`Palavra ${newWord}`}</h1> : <div />}
-
-
-          
-         
+        { newWord != undefined ? <h1>{`Palavra ${newWord}`}</h1> : <div />}
       </Right>
-    </>
+    </Container>
   );
 }
 
